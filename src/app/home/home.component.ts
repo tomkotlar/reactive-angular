@@ -4,6 +4,7 @@ import {interval, noop, Observable, of, throwError, timer} from 'rxjs';
 import {catchError, delay, delayWhen, filter, finalize, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
 
 import { CoursesService } from "../services/courses.service";
+import { LoadingService } from 'app/loading/loading.service';
 
 @Component({
   selector: 'home',
@@ -17,7 +18,7 @@ export class HomeComponent implements OnInit {
   advancedCourses$: Observable<Course[]>;
 
 
-  constructor(private coursesService: CoursesService) {
+  constructor(private coursesService: CoursesService, private loadingService: LoadingService) {
 
   }
 
