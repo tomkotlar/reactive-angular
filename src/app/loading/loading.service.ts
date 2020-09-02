@@ -10,7 +10,10 @@ export class LoadingService {
     loading$: Observable<boolean> = this.loadingSubject.asObservable()
 
     showLoaderUntilCompleted<T>(obs$: Observable<T>): Observable<T> {
-        return undefined
+        return of(null).pipe(tap(() => this.loadingOn),
+        concatMap(() => obs$),
+        finalize(() => this.loadingOff)
+        )
     }
 
     loadingOn() {
