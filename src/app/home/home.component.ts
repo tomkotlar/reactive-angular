@@ -5,6 +5,7 @@ import {catchError, delay, delayWhen, filter, finalize, map, retryWhen, shareRep
 
 import { CoursesService } from "../services/courses.service";
 import { LoadingService } from 'app/loading/loading.service';
+import { MessageService } from 'app/messages/messages.service';
 
 @Component({
   selector: 'home',
@@ -18,7 +19,7 @@ export class HomeComponent implements OnInit {
   advancedCourses$: Observable<Course[]>;
 
 
-  constructor(private coursesService: CoursesService, private loadingService: LoadingService) {
+  constructor(private coursesService: CoursesService, private loadingService: LoadingService, private messageService: MessageService) {
 
   }
 
@@ -31,7 +32,13 @@ export class HomeComponent implements OnInit {
   
   reloadCourses() {
     const courses$ = this.coursesService.loadAllCourses().pipe(
-      map(courses => courses.sort(sortCoursesBySeqNo))
+      map(courses => courses.sort(sortCoursesBySeqNo)),
+      catchError(err => {
+        const errorMessage = 'Could Not Load Courses'
+        this.messageService.showErrors(errorMessage)
+        console.log(errorMessage)
+        return throwError(err)
+      })
     )
 
     const loadCourses$ = this.loadingService.showLoaderUntilCompleted(courses$)
